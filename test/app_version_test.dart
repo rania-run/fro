@@ -44,6 +44,19 @@ void main() {
     });
   });
 
+  group('BumpStrategy.parse', () {
+    test('parses all valid strategies case-insensitively', () {
+      expect(BumpStrategy.parse('patch'), BumpStrategy.patch);
+      expect(BumpStrategy.parse('MINOR'), BumpStrategy.minor);
+      expect(BumpStrategy.parse('Major'), BumpStrategy.major);
+    });
+
+    test('throws ArgumentError for unknown value', () {
+      expect(() => BumpStrategy.parse('hotfix'), throwsArgumentError);
+      expect(() => BumpStrategy.parse(''), throwsArgumentError);
+    });
+  });
+
   group('AppVersion.isNewerThan', () {
     test('higher major is newer', () {
       expect(
@@ -54,6 +67,12 @@ void main() {
     test('higher minor is newer when major is equal', () {
       expect(
           AppVersion.parse('1.2.0+1').isNewerThan(AppVersion.parse('1.1.9+99')),
+          isTrue);
+    });
+
+    test('higher patch is newer when major and minor are equal', () {
+      expect(
+          AppVersion.parse('1.0.1+1').isNewerThan(AppVersion.parse('1.0.0+99')),
           isTrue);
     });
 

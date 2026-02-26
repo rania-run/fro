@@ -21,8 +21,8 @@ dart pub global activate fro
 # Show current version from pubspec.yaml
 fro check
 
-# Show version from latest git tag (per environment)
-fro check --source=git --env=prod
+# Compare pubspec version against the latest git tag for an environment
+fro check --env=prod
 
 # Bump version and create a git tag
 fro bump --env=prod --strategy=patch   # 1.2.3+45 → 1.2.4+46

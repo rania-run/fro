@@ -62,9 +62,9 @@ void main() {
         runner: _fakeRunner('prod-v1.2.0+5\nstg-v1.3.0+8\ndev-v0.1.0+2\n'),
       );
       final map = await svc.latestTagsPerEnv();
-      expect(map['prod'].toString(), '1.2.0+5');
-      expect(map['stg'].toString(), '1.3.0+8');
-      expect(map['dev'].toString(), '0.1.0+2');
+      expect(map['prod']!.toString(), '1.2.0+5');
+      expect(map['stg']!.toString(), '1.3.0+8');
+      expect(map['dev']!.toString(), '0.1.0+2');
     });
 
     test('returns empty map when no tags exist', () async {
@@ -84,6 +84,31 @@ void main() {
     test('throws GitException when tag already exists', () async {
       final svc = GitService(runner: _failingRunner('tag already exists'));
       expect(svc.createTag('prod-v1.0.0+1'), throwsA(isA<GitException>()));
+    });
+  });
+
+  group('GitService.pushTag', () {
+    test('throws GitException when push fails', () async {
+      final svc = GitService(runner: _failingRunner('failed to push tag'));
+      expect(svc.pushTag('prod-v1.0.0+1'), throwsA(isA<GitException>()));
+    });
+
+    test('calls git push with correct arguments', () async {
+      String? capturedExecutable;
+      List<String>? capturedArgs;
+
+      final svc = GitService(
+        runner: (executable, args) async {
+          capturedExecutable = executable;
+          capturedArgs = args;
+          return ProcessResult(0, 0, '', '');
+        },
+      );
+
+      await svc.pushTag('prod-v1.0.0+1');
+
+      expect(capturedExecutable, 'git');
+      expect(capturedArgs, ['push', 'origin', 'prod-v1.0.0+1']);
     });
   });
 }

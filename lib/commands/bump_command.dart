@@ -99,6 +99,9 @@ class BumpCommand extends Command<void> {
         await _git.pushTag(tag);
         stdout.writeln(chalk.green('✓ tag pushed to origin'));
       }
+    } on FileSystemException catch (e) {
+      stderr.writeln(chalk.red('File error: ${e.message} — ${e.path}'));
+      exitCode = 1;
     } on ArgumentError catch (e) {
       stderr.writeln(chalk.red('Error: $e'));
       exitCode = 1;

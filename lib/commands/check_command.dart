@@ -64,6 +64,9 @@ class CheckCommand extends Command<void> {
           stdout.writeln('${chalk.bold('git/$env:')} $tagVersion  $status');
         }
       }
+    } on FileSystemException catch (e) {
+      stderr.writeln(chalk.red('File error: ${e.message} — ${e.path}'));
+      exitCode = 1;
     } on FormatException catch (e) {
       stderr.writeln(chalk.red('Error: ${e.message}'));
       exitCode = 1;
