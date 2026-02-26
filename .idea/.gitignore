@@ -1,0 +1,11 @@
+# User-specific / machine-specific — do not commit
+/workspace.xml
+/misc.xml
+/shelf/
+*.xml~
+
+# Copilot / AI plugin state
+/copilot.data.migration.ask2agent.xml
+
+# DB Navigator plugin
+/dbnavigator.xml

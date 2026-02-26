@@ -8,10 +8,15 @@ build/
 # macOS
 .DS_Store
 
-# IDE
-.idea/
+# VSCode
 .vscode/
-*.iml
+
+# IntelliJ / Android Studio — keep module + vcs config, ignore the rest
+.idea/*
+!.idea/.gitignore
+!.idea/modules.xml
+!.idea/vcs.xml
+!.idea/*.iml
 
 # Secrets
 .env
