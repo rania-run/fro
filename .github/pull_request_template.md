@@ -15,5 +15,4 @@ Closes #
 - [ ] `dart analyze --fatal-infos` passes
 - [ ] `dart format --set-exit-if-changed .` passes
 - [ ] Tests added / updated for every new behaviour
-- [ ] CHANGELOG updated (for user-facing changes)
 - [ ] No debug code or commented-out blocks left in

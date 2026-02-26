@@ -96,9 +96,31 @@ Runs on every new issue or PR:
 
 ---
 
-## Publish Workflow
+## Release Workflow (`.github/workflows/release.yml`)
 
-Defined in `.github/workflows/publish.yml`. Triggers on `v*` tags:
+Triggers on `v*` tag pushes. Steps in order:
+
+1. **Generate notes** — calls the GitHub API to auto-generate release notes from merged PRs since the last tag
+2. **Update CHANGELOG.md** — prepends the new entry and commits it back to `main` with `[skip ci]`
+3. **Create GitHub release** — publishes the release with the generated notes
+
+> **One-time setup required for the CHANGELOG commit:** the `github-actions[bot]` needs permission to push to the protected `main` branch.
+> Go to **Settings → Branches → edit the `main` rule** → under *"Allow specified actors to bypass required pull requests"*, add `github-actions[bot]`.
+
+### Cutting a release
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+Both `publish.yml` (pub.dev) and `release.yml` (GitHub release + CHANGELOG) trigger automatically.
+
+---
+
+## Publish Workflow (`.github/workflows/publish.yml`)
+
+Triggers on `v*` tag pushes. Publishes the package to pub.dev:
 
 ```bash
 git tag v0.1.0
