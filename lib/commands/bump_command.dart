@@ -67,12 +67,22 @@ class BumpCommand extends Command<void> {
       negatable: false,
     );
 
+  static final _envPattern = RegExp(r'^[a-zA-Z][\w-]*$');
+
   @override
   Future<void> run() async {
     final env = argResults!['env'] as String;
     final strategy = BumpStrategy.parse(argResults!['strategy'] as String);
     final ci = argResults!['ci'] as bool;
     final noPush = argResults!['no-push'] as bool;
+
+    if (!_envPattern.hasMatch(env)) {
+      stderr.writeln(chalk.red(
+        'Invalid --env "$env": must start with a letter and contain only letters, digits, underscores, or hyphens.',
+      ));
+      exitCode = 1;
+      return;
+    }
 
     try {
       final current = _versions.readVersion();
