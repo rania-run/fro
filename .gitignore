@@ -24,3 +24,7 @@ local/
 # Secrets
 .env
 *.env
+
+# Example project — setup.sh creates a nested git repo for demo purposes;
+# ignore it so the parent repo keeps tracking example/ as regular files.
+example/.git/
