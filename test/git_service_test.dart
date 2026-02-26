@@ -54,6 +54,22 @@ void main() {
       final version = await svc.latestTagForEnv('prod');
       expect(version.toString(), '1.0.0+1');
     });
+
+    test('parses hyphenated env name correctly', () async {
+      final svc = GitService(
+        runner: _fakeRunner('prod-us-v1.0.0+1\nprod-v2.0.0+2\n'),
+      );
+      final version = await svc.latestTagForEnv('prod-us');
+      expect(version.toString(), '1.0.0+1');
+    });
+
+    test('does not conflate prod with prod-us', () async {
+      final svc = GitService(
+        runner: _fakeRunner('prod-us-v1.0.0+1\nprod-v2.0.0+2\n'),
+      );
+      final version = await svc.latestTagForEnv('prod');
+      expect(version.toString(), '2.0.0+2');
+    });
   });
 
   group('GitService.latestTagsPerEnv', () {

@@ -23,7 +23,7 @@ class GitService {
   final ProcessRunner _run;
 
   static final _tagPattern = RegExp(
-    r'^(?<env>[a-zA-Z]\w*)-v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)\+(?<build>\d+)$',
+    r'^(?<env>[a-zA-Z][\w-]*?)-v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)\+(?<build>\d+)$',
   );
 
   /// Returns all git tags in the repository.
