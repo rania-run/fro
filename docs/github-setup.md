@@ -92,7 +92,7 @@ Runs on every new issue or PR:
 |---|---|
 | Issue opened | `rania-run` |
 | PR opened | PR author |
-| PR opened | Earliest open milestone is set automatically |
+| PR opened (milestone auto-set) | Earliest open milestone is set automatically |
 
 ---
 
