@@ -91,8 +91,7 @@ Runs on every new issue or PR:
 | Event | Assignee |
 |---|---|
 | Issue opened | `rania-run` |
-| PR opened | PR author |
-| PR opened (milestone auto-set) | Earliest open milestone is set automatically |
+| PR opened | PR author; earliest open milestone auto-set |
 
 ---
 

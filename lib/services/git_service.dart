@@ -26,6 +26,9 @@ class GitService {
     r'^(?<env>[a-zA-Z][\w-]*?)-v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)\+(?<build>\d+)$',
   );
 
+  /// Pattern that a valid environment name must match.
+  static final envPattern = RegExp(r'^[a-zA-Z][\w-]*$');
+
   /// Returns all git tags in the repository.
   ///
   /// Throws [GitException] if the git command fails.
@@ -46,9 +49,10 @@ class GitService {
   Future<AppVersion?> latestTagForEnv(String env) async {
     final allTags = await tags();
     final versions = allTags
-        .where((t) =>
-            _tagPattern.hasMatch(t) &&
-            _tagPattern.firstMatch(t)!.namedGroup('env') == env)
+        .where((t) {
+          final m = _tagPattern.firstMatch(t);
+          return m != null && m.namedGroup('env') == env;
+        })
         .map(_parseTagVersion)
         .whereType<AppVersion>()
         .toList();

@@ -42,13 +42,11 @@ class CheckCommand extends Command<void> {
       valueHelp: 'prod|stg|dev',
     );
 
-  static final _envPattern = RegExp(r'^[a-zA-Z][\w-]*$');
-
   @override
   Future<void> run() async {
     final env = argResults?['env'] as String?;
 
-    if (env != null && !_envPattern.hasMatch(env)) {
+    if (env != null && !GitService.envPattern.hasMatch(env)) {
       stderr.writeln(chalk.red(
         'Invalid --env "$env": must start with a letter and contain only letters, digits, underscores, or hyphens.',
       ));
