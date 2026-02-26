@@ -17,6 +17,8 @@ gh label create "status: in progress"  --color fbca04 --description "Actively be
 gh label create "priority: high"     --color b60205 --description "Urgent"                        --repo rania-run/fro
 gh label create "good first issue"   --color 7057ff --description "Good for newcomers"            --repo rania-run/fro --force
 gh label create "breaking change"    --color ee0701 --description "Breaks existing behaviour"     --repo rania-run/fro
+gh label create "type: testing"      --color c5def5 --description "Test coverage or test infrastructure" --repo rania-run/fro
+gh label create "chore: deps"        --color 0e8a16 --description "Dependency updates"               --repo rania-run/fro
 ```
 
 ---
@@ -82,9 +84,42 @@ Defined in `.github/workflows/ci.yml`. Runs on push/PR to `main`:
 
 ---
 
-## Publish Workflow
+## Auto Assign (`.github/workflows/auto-assign.yml`)
 
-Defined in `.github/workflows/publish.yml`. Triggers on `v*` tags:
+Runs on every new issue or PR:
+
+| Event | Assignee |
+|---|---|
+| Issue opened | `rania-run` |
+| PR opened | PR author; earliest open milestone auto-set |
+
+---
+
+## Release Workflow (`.github/workflows/release.yml`)
+
+Triggers on `v*` tag pushes. Steps in order:
+
+1. **Generate notes** — calls the GitHub API to auto-generate release notes from merged PRs since the last tag
+2. **Update CHANGELOG.md** — prepends the new entry and commits it back to `main` with `[skip ci]`
+3. **Create GitHub release** — publishes the release with the generated notes
+
+> **One-time setup required for the CHANGELOG commit:** the `github-actions[bot]` needs permission to push to the protected `main` branch.
+> Go to **Settings → Branches → edit the `main` rule** → under *"Allow specified actors to bypass required pull requests"*, add `github-actions[bot]`.
+
+### Cutting a release
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+Both `publish.yml` (pub.dev) and `release.yml` (GitHub release + CHANGELOG) trigger automatically.
+
+---
+
+## Publish Workflow (`.github/workflows/publish.yml`)
+
+Triggers on `v*` tag pushes. Publishes the package to pub.dev:
 
 ```bash
 git tag v0.1.0

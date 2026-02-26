@@ -1,0 +1,18 @@
+"type: enhancement":
+  - changed-files:
+    - any-glob-to-any-file: lib/**
+
+"type: testing":
+  - changed-files:
+    - any-glob-to-any-file: test/**
+
+"type: docs":
+  - changed-files:
+    - any-glob-to-any-file:
+      - README.md
+      - CHANGELOG.md
+      - docs/**
+
+"chore: deps":
+  - changed-files:
+    - any-glob-to-any-file: pubspec.yaml
