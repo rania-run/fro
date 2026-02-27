@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
-    assignees:
+    reviewers:
       - rania-run
     labels:
       - "chore: deps"
@@ -19,7 +19,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
-    assignees:
+    reviewers:
       - rania-run
     labels:
       - "chore: deps"

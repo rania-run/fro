@@ -1,0 +1,79 @@
+name: Dependabot Auto-Merge
+
+on:
+  # NOTE: We intentionally use `pull_request_target` so this workflow can act
+  # on Dependabot PRs with the base branch's permissions. This job only calls
+  # the GitHub API and does not check out or execute code from the PR.
+  # If you add steps that run code from the PR (e.g. actions/checkout + scripts),
+  # switch to `pull_request` or otherwise ensure untrusted code is not executed
+  # with write permissions.
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge for Dependabot PRs
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            let prNumber = context.payload.pull_request?.number
+              || context.payload.review?.pull_request?.number;
+
+            if (!prNumber && Array.isArray(context.payload.check_suite?.pull_requests)) {
+              const prs = context.payload.check_suite.pull_requests;
+              if (prs.length === 1) {
+                prNumber = prs[0]?.number;
+              } else {
+                console.log(`check_suite event has ${prs.length} associated pull requests; unable to determine a single PR, skipping.`);
+                return;
+              }
+            }
+            
+            if (!prNumber) {
+              console.log('No PR number found, skipping.');
+              return;
+            }
+
+            // Get PR details
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: prNumber,
+            });
+
+            // Check if this is a dependabot PR
+            if (pr.user.login !== 'dependabot[bot]') {
+              console.log('Not a dependabot PR, skipping.');
+              return;
+            }
+
+            // Check if auto-merge is already enabled
+            if (pr.auto_merge) {
+              console.log('Auto-merge already enabled.');
+              return;
+            }
+
+            // Enable auto-merge with squash strategy
+            try {
+              await github.rest.pulls.enableAutoMerge({
+                owner,
+                repo,
+                pull_number: prNumber,
+                merge_method: 'squash',
+              });
+              console.log('Auto-merge enabled with squash method.');
+            } catch (error) {
+              console.log('Failed to enable auto-merge:', error.message);
+              console.log('This may be due to branch protection rules or other repository settings.');
+            }
