@@ -27,7 +27,18 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo;
-            const prNumber = context.payload.pull_request?.number || context.payload.check_suite?.pull_requests[0]?.number;
+            let prNumber = context.payload.pull_request?.number
+              || context.payload.review?.pull_request?.number;
+
+            if (!prNumber && Array.isArray(context.payload.check_suite?.pull_requests)) {
+              const prs = context.payload.check_suite.pull_requests;
+              if (prs.length === 1) {
+                prNumber = prs[0]?.number;
+              } else {
+                console.log(`check_suite event has ${prs.length} associated pull requests; unable to determine a single PR, skipping.`);
+                return;
+              }
+            }
             
             if (!prNumber) {
               console.log('No PR number found, skipping.');
