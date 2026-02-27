@@ -1,6 +1,12 @@
 name: Dependabot Auto-Merge
 
 on:
+  # NOTE: We intentionally use `pull_request_target` so this workflow can act
+  # on Dependabot PRs with the base branch's permissions. This job only calls
+  # the GitHub API and does not check out or execute code from the PR.
+  # If you add steps that run code from the PR (e.g. actions/checkout + scripts),
+  # switch to `pull_request` or otherwise ensure untrusted code is not executed
+  # with write permissions.
   pull_request_target:
     types: [opened, synchronize, reopened]
   pull_request_review:
